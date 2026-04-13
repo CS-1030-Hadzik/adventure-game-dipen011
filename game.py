@@ -1,55 +1,34 @@
 class Player:
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
         self.inventory = []
-        self.has_lantern = False
+        self.health = 100
         self.has_map = False
-
-    def add_item(self, item):
-        if item not in self.inventory:
-            self.inventory.append(item)
-            print(f"You picked up {item}.")
+        self.has_lantern = False
 
 
-def find_lantern(player):
-    if player.has_lantern:
-        print("You already have the lantern.")
-    else:
-        print("You found a lantern in the dark woods.")
-        player.has_lantern = True
-        player.add_item("lantern")
+def welcome_player():
+    print("Welcome to the Adventure Game!")
+    name = input("What is your name, adventurer? ")
+    print(f"Welcome, {name}! Your journey begins now.")
+    return Player(name)
 
 
-def find_map(player):
-    if player.has_map:
-        print("You already have the map.")
-    else:
-        print("You found a map near the mountain pass.")
-        player.has_map = True
-        player.add_item("map")
+def describe_area():
+    print("""
+You find yourself in a dark forest...
+You see two paths ahead:
+    1. Take the left path into the dark woods.
+    2. Take the right path toward the mountain pass.
+    3. Try to enter the cave.
+    4. Type i to view your inventory.
+    5. Quit
+""")
 
 
-def explore_cave(player):
-    if player.has_lantern:
-        print("You use the lantern to explore the cave.")
-        if "treasure" not in player.inventory:
-            player.add_item("treasure")
-            print("You found treasure in the cave.")
-        else:
-            print("You already found the treasure here.")
-    else:
-        print("It is too dark to explore the cave without a lantern.")
-
-
-def explore_hidden_valley(player):
-    if player.has_map:
-        print("You use the map to find the hidden valley.")
-        if "rare herbs" not in player.inventory:
-            player.add_item("rare herbs")
-            print("You found rare herbs in the valley.")
-        else:
-            print("You already found the rare herbs here.")
-    else:
-        print("You cannot find the hidden valley without a map.")
+def add_to_inventory(player, item):
+    player.inventory.append(item)
+    print(f"You picked up a {item}!")
 
 
 def show_inventory(player):
@@ -60,34 +39,41 @@ def show_inventory(player):
 
 
 def main():
-    player = Player()
-
-    print("Welcome to the Adventure Game.")
+    player = welcome_player()
+    describe_area()
 
     while True:
-        print("\nChoose an action:")
-        print("1. Explore dark woods")
-        print("2. Explore mountain pass")
-        print("3. Explore a nearby cave")
-        print("4. Search for a hidden valley")
-        print("5. Show inventory")
-        print("6. Quit")
-
-        choice = input("Enter your choice: ")
+        choice = input("What will you do (1, 2, 3, 4, or 5): ")
 
         if choice == "1":
-            find_lantern(player)
+            print(f"{player.name}, you step into the dark woods.")
+            if not player.has_lantern:
+                add_to_inventory(player, "lantern")
+                player.has_lantern = True
+            else:
+                print("You already picked up the lantern here.")
+
         elif choice == "2":
-            find_map(player)
+            print(f"{player.name}, you walk toward the mountain pass.")
+            if not player.has_map:
+                add_to_inventory(player, "map")
+                player.has_map = True
+            else:
+                print("You already picked up the map here.")
+
         elif choice == "3":
-            explore_cave(player)
-        elif choice == "4":
-            explore_hidden_valley(player)
-        elif choice == "5":
+            if player.has_lantern:
+                print("You enter the cave because you have the lantern.")
+            else:
+                print("It is too dark to continue without a lantern.")
+
+        elif choice == "4" or choice.lower() == "i":
             show_inventory(player)
-        elif choice == "6":
+
+        elif choice == "5":
             print("Thanks for playing.")
             break
+
         else:
             print("Invalid choice. Try again.")
 
